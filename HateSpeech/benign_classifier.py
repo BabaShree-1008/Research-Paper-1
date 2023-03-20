@@ -7,6 +7,9 @@ from transformers import RobertaTokenizer, RobertaForMaskedLM
 from transformers import LineByLineTextDataset
 from transformers import DataCollatorForLanguageModeling
 from transformers import Trainer, TrainingArguments
+from transformers import logging
+
+logging.set_verbosity_info()
 
 os.environ["MLFLOW_FLATTEN_PARAMS"] = "1"
 os.environ["MLFLOW_EXPERIMENT_NAME"] = "hatespeech"
@@ -25,7 +28,7 @@ train_dataset = LineByLineTextDataset(
 val_dataset = LineByLineTextDataset(
     tokenizer=tokenizer,
     block_size=512,
-    file_path="./dataset/benign/train_text.txt"
+    file_path="./dataset/benign/val_text.txt"
 )
 
 data_collator = DataCollatorForLanguageModeling(
@@ -62,7 +65,6 @@ trainer = Trainer(
     compute_metrics=compute_accuracy
     )
 
-trainer.train()
 trainer.save_model("./hatespeech_model")
 
 mlflow.end_run()
